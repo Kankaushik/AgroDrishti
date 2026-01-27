@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | AgroDrishti</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body
+    class="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-600 to-blue-200 overflow-hidden relative"
+  >
+    <!-- Background Map -->
+    <div
+      class="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')] bg-center bg-cover"
+    ></div>
+
+    <!-- Login Card -->
+    <div
+      class="relative bg-white border border-gray-200 shadow-2xl rounded-3xl w-full max-w-md sm:max-w-3xl mx-4 sm:mx-6 grid grid-cols-1 md:grid-cols-2 overflow-hidden"
+    >
+      <!-- Left: Branding -->
+      <div class="p-6 flex flex-col items-center justify-center space-y-4">
+        <img
+          src="Maploom_logo.png"
+          alt="MapLoom Logo"
+          class="w-full h-40 object-contain"
+        />
+        <h3 class="text-xl font-semibold text-gray-800 text-center">
+          Where Maps Become Living Threads of Information
+        </h3>
+      </div>
+
+      <!-- Right: Login Form -->
+      <div class="p-6 flex flex-col justify-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+
+        <form id="loginForm" class="space-y-4" autocomplete="off" novalidate>
+          <!-- Username -->
+          <div class="relative">
+            <span
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              <i class="bi bi-person-fill"></i>
+            </span>
+            <input
+              id="userId"
+              type="text"
+              placeholder="Username"
+              required
+              class="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="relative">
+            <span
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              <i class="bi bi-lock-fill"></i>
+            </span>
+            <input
+              id="password"
+              type="password"
+              placeholder="Password"
+              required
+              class="w-full pl-12 pr-12 py-3 bg-gray-100 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            <button
+              type="button"
+              id="togglePwd"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              <i class="bi bi-eye-slash-fill" id="eyeOff"></i>
+              <i class="bi bi-eye-fill hidden" id="eyeOn"></i>
+            </button>
+          </div>
+
+          <!-- Remember -->
+          <label class="inline-flex items-center text-sm">
+            <input type="checkbox" class="h-4 w-4 text-blue-600" />
+            <span class="ml-2 text-gray-700">Remember me</span>
+          </label>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold shadow-lg transition hover:scale-105 active:scale-95"
+          >
+            Login
+          </button>
+
+          <!-- Error -->
+          <p id="errorMsg" class="hidden text-center text-red-500 text-sm">
+            Invalid credentials. Please try again.
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+      // Toggle password visibility
+      const pwd = document.getElementById("password");
+      const eyeOff = document.getElementById("eyeOff");
+      const eyeOn = document.getElementById("eyeOn");
+
+      document.getElementById("togglePwd").onclick = () => {
+        const show = pwd.type === "password";
+        pwd.type = show ? "text" : "password";
+        eyeOff.classList.toggle("hidden");
+        eyeOn.classList.toggle("hidden");
+      };
+
+      // ✅ LOGIN HANDLER (FIXED)
+      document.getElementById("loginForm").onsubmit = async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("userId").value.trim();
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          document.getElementById("errorMsg").classList.remove("hidden");
+          return;
+        }
+
+        // Redirect by role
+        if (data.role === "admin") {
+          location.href = "admin.html";
+        } else {
+          location.href = "user.html";
+        }
+      };
+    </script>
+  </body>
+</html>

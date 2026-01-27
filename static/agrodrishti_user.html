@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AgroDrishti – Smart Agriculture</title>
+    <link rel="stylesheet" href="/agrodrishti_user.css" />
+  </head>
+
+  <body>
+    <!-- HERO -->
+    <div class="hero">
+      <h1>Agro<span>Drishti</span></h1>
+      <p>Smart Vision for Smart Farming · Data-Driven Crop Intelligence</p>
+    </div>
+
+    <!-- MAIN -->
+    <div class="container">
+      <div class="glass-card">
+        <!-- Map Selection -->
+        <div class="map-card">
+          <div class="map-left">
+            <div class="map-title">📍 Select Your Land</div>
+            <div class="map-sub">
+              Choose your farm area using the interactive map
+            </div>
+          </div>
+          <button class="btn btn-outline" onclick="openMaploom()">
+            Open Map
+          </button>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="recommendation">
+          <div>
+            <div class="crop-label">Recommended Crop</div>
+            <div class="crop-name" id="crop">—</div>
+            <div class="tag">ML • Random Forest • Dataset-Driven</div>
+          </div>
+          <button class="btn" onclick="loadData()">Analyze Field</button>
+        </div>
+
+        <!-- Soil Health -->
+        <div class="soil-card">
+          <div class="soil-header">🌱 Soil Health Summary</div>
+          <div class="soil-grid">
+            <div class="soil-metric">
+              <div class="soil-label">Soil Moisture</div>
+              <div class="soil-status" id="moistureStatus">—</div>
+              <div class="soil-advice" id="moistureAdvice">—</div>
+            </div>
+
+            <div class="soil-metric">
+              <div class="soil-label">Soil pH</div>
+              <div class="soil-status" id="phStatus">—</div>
+              <div class="soil-advice" id="phAdvice">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sensors -->
+        <div class="sensor-grid">
+          <div class="sensor-card">
+            <h4>🌡 Temperature (°C)</h4>
+            <p id="temp">—</p>
+          </div>
+          <div class="sensor-card">
+            <h4>💧 Humidity (%)</h4>
+            <p id="humidity">—</p>
+          </div>
+          <div class="sensor-card">
+            <h4>⚗ Soil pH</h4>
+            <p id="ph">—</p>
+          </div>
+          <div class="sensor-card">
+            <h4>🌧 Rainfall (mm)</h4>
+            <p id="rainfall">—</p>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-bar">
+          <div>System Status: <span>Active</span></div>
+          <div>Data Source: <span>Simulated IoT Sensors</span></div>
+          <div>Model: <span>Random Forest</span></div>
+        </div>
+      </div>
+
+      <div class="footer">© 2026 AgroDrishti.</div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+      function loadData() {
+        fetch("/api/agrodrishti/recommend")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("crop").innerText = data.recommended_crop;
+            document.getElementById("temp").innerText =
+              data.sensor_data.temperature;
+            document.getElementById("humidity").innerText =
+              data.sensor_data.humidity;
+            document.getElementById("ph").innerText = data.sensor_data.ph;
+            document.getElementById("rainfall").innerText =
+              data.sensor_data.rainfall;
+
+            document.getElementById("moistureStatus").innerText =
+              data.soil_analysis.soil_moisture_status;
+            document.getElementById("moistureAdvice").innerText =
+              data.soil_analysis.soil_moisture_advice;
+            document.getElementById("phStatus").innerText =
+              data.soil_analysis.soil_ph_status;
+            document.getElementById("phAdvice").innerText =
+              data.soil_analysis.soil_ph_advice;
+          })
+          .catch(() => alert("Unable to fetch data from server"));
+      }
+      function openMaploom() {
+        window.location.href = "/";
+      }
+    </script>
+  </body>
+</html>

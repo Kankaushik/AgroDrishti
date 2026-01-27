@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AgroDrishti Admin Dashboard</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial;
+        background: linear-gradient(180deg, #e8f5e9, #f4f7f5);
+      }
+
+      /* ===== HEADER ===== */
+      .header {
+        padding: 40px 20px 70px;
+        background: linear-gradient(120deg, #1b5e20, #43a047, #66bb6a);
+        color: white;
+        text-align: center;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 34px;
+        letter-spacing: 0.5px;
+      }
+
+      .header p {
+        margin-top: 10px;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      /* ===== MAIN WRAPPER ===== */
+      .wrapper {
+        max-width: 1100px;
+        margin: -50px auto 40px;
+        padding: 0 20px;
+      }
+
+      /* ===== DASHBOARD CARD ===== */
+      .dashboard-card {
+        background: white;
+        border-radius: 22px;
+        padding: 32px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+      }
+
+      /* ===== STATS GRID ===== */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+      }
+
+      /* ===== STAT CARD ===== */
+      .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #66bb6a;
+}
+
+.stat-icon {
+  font-size: 30px;
+  background: #e8f5e9;
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.stat-title {
+  font-size: 14px;
+  color: #777;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1b5e20;
+  margin-top: 6px;
+}
+
+      /* ===== ACTIONS ===== */
+      
+
+      .btn {
+        padding: 16px 34px;
+        border-radius: 40px;
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: 0.2s;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #2e7d32, #66bb6a);
+        color: white;
+        padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 500;
+  box-shadow: 0 10px 24px rgba(0, 128, 0, 0.25);
+  transition: all 0.25s ease;
+         box-shadow: 0 14px 32px rgba(0, 128, 0, 0.35);
+      }
+
+      .btn-light {
+  padding: 14px 26px;
+  border-radius: 30px;
+  background: #f1f1f1;
+  color: #333;
+  transition: all 0.25s ease;
+}
+
+.btn-light:hover {
+  background: #ffeaea;
+  color: #c62828;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+      /* ===== ACTIVITY ===== */
+      .activity-section {
+  margin-top: 36px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #1b5e20;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.activity-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+}
+
+.activity-circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.activity-circle.green {
+  background: #2e7d32;
+}
+
+.activity-circle.blue {
+  background: #1e88e5;
+}
+
+.activity-circle.orange {
+  background: #fb8c00;
+}
+
+.activity-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.activity-sub {
+  font-size: 12px;
+  color: #666;
+  margin: 4px 0 0;
+}
+
+
+/* status dots */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+
+.dot.green { background: #43a047; }
+.dot.blue { background: #1e88e5; }
+.dot.orange { background: #fb8c00; }
+
+
+      /* ===== FOOTER ===== */
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #777;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <div class="header">
+      <h1>AgroDrishti Admin Dashboard</h1>
+      <p>System Overview & MapLoom Integration</p>
+    </div>
+
+    <!-- MAIN -->
+    <div class="wrapper">
+      <div class="dashboard-card">
+        <div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">👤</div>
+    <div>
+      <div class="stat-title">Total Users</div>
+      <div class="stat-value" id="totalUsers">—</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon">🗺️</div>
+    <div>
+      <div class="stat-title">Total Maps</div>
+      <div class="stat-value" id="totalMaps">—</div>
+    </div>
+  </div>
+<div class="stat-card">
+  <div class="stat-title">Map Versions</div>
+  <div class="stat-value" id="mapVersions">—</div>
+</div>
+
+<div class="stat-card">
+  <div class="stat-title">Maps With Feedback</div>
+  <div class="stat-value" id="mapsWithFeedback">—</div>
+</div>
+
+  <div class="stat-card">
+    <div class="stat-icon">💬</div>
+    <div>
+      <div class="stat-title">Total Feedback</div>
+      <div class="stat-value" id="totalFeedback">—</div>
+    </div>
+  </div>
+</div>
+
+
+        <div class="actions">
+          <button class="btn btn-primary" onclick="openMaploom()">
+            Open MapLoom Admin
+          </button>
+          <button class="btn btn-light" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="activity-section">
+  <h3 class="section-title">System Activity</h3>
+
+  <div class="activity-grid">
+    <div class="activity-card">
+      <div class="activity-circle green"></div>
+      <div>
+        <p class="activity-title">Map Updated</p>
+        <p class="activity-sub">Admin modified land boundaries</p>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-circle blue"></div>
+      <div>
+        <p class="activity-title">New Login</p>
+        <p class="activity-sub">A user accessed MapLoom</p>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-circle orange"></div>
+      <div>
+        <p class="activity-title">Feedback Received</p>
+        <p class="activity-sub">User submitted feedback</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+      <div class="footer">
+        © 2026 AgroDrishti · Smart Agriculture Decision Support System
+      </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/api/admin/stats")
+    .then(res => {
+      if (res.status === 403) {
+        alert("Admin login required");
+        window.location.href = "/";
+        return;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!data) return;
+
+      document.getElementById("totalUsers").innerText = data.users;
+      document.getElementById("totalMaps").innerText = data.maps;
+      document.getElementById("totalFeedback").innerText = data.feedback;
+      document.getElementById("mapVersions").innerText = data.map_versions;
+      document.getElementById("mapsWithFeedback").innerText = data.maps_with_feedback;
+    });
+});
+function openMaploom() {
+    window.location.href = "/";
+  }
+</script>
+
+
+   
+  </body>
+</html>
