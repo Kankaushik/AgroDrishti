@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -58,11 +58,8 @@
         display: block;
         border-radius: 6px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    
-    
       }
 
-      
       #top > * {
         font-size: 14px;
         border: 1px solid #bbb;
@@ -71,7 +68,9 @@
         padding: 6px 12px;
         cursor: pointer;
         white-space: nowrap;
-        transition: background 0.25s, color 0.25s;
+        transition:
+          background 0.25s,
+          color 0.25s;
       }
       #top > *:hover:not(:disabled) {
         background: #1e7fd4;
@@ -282,6 +281,8 @@
       <button id="drawBtn">✎ Draw</button>
       <button id="clearBtn">❌ Clear</button>
       <button id="noteBtn">📝 Note</button>
+      <button id="saveAreaBtn">💾 Save Area</button>
+      <button id="viewSavedBtn">⭐ Saved</button>
       <label
         ><input type="checkbox" id="saveSketchToggle" /> Save sketch with
         note</label
@@ -318,8 +319,8 @@
             >Key Changes (one per line)<textarea
               id="noteChanges"
               rows="3"
-            ></textarea
-          ></label>
+            ></textarea>
+          </label>
         </div>
         <footer class="btns">
           <button type="button" id="noteCancel">Cancel</button>
@@ -329,6 +330,196 @@
     </div>
 
     <div id="toastContainer" aria-live="assertive"></div>
+
+    <!-- Hover Tooltip -->
+    <div
+      id="hoverTooltip"
+      style="
+        display: none;
+        position: fixed;
+        background: #fff;
+        padding: 12px 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 1600;
+        max-width: 280px;
+        pointer-events: none;
+      "
+    >
+      <div
+        style="font-weight: 600; color: #0369a1; margin-bottom: 6px"
+        id="tooltipTitle"
+      >
+        Area Name
+      </div>
+      <div style="font-size: 13px; color: #475569" id="tooltipDesc">
+        Loading...
+      </div>
+      <div style="margin-top: 8px; font-size: 12px; color: #16a34a">
+        <i>Click for yield prediction</i>
+      </div>
+    </div>
+
+    <!-- Prediction Modal -->
+    <div
+      id="predictionModal"
+      class="dialog"
+      style="width: min(500px, calc(100vw - 24px))"
+    >
+      <header
+        style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%)"
+      >
+        <h3 style="color: #fff">🌾 AI Yield Prediction</h3>
+        <button class="closeBtn" id="predCloseBtn" style="color: #fff">
+          ×
+        </button>
+      </header>
+      <div class="body" style="padding: 20px">
+        <div
+          id="predAreaInfo"
+          style="
+            background: #f0fdf4;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+          "
+        >
+          <strong id="predAreaName">Area Name</strong>
+          <p
+            style="font-size: 13px; color: #475569; margin-top: 4px"
+            id="predAreaDesc"
+          ></p>
+        </div>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+          "
+        >
+          <div>
+            <label style="font-size: 12px; color: #64748b">Crop Type</label>
+            <select
+              id="predCrop"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              "
+            >
+              <option value="Rice">Rice 🌾</option>
+              <option value="Wheat">Wheat 🌾</option>
+              <option value="Maize">Maize 🌽</option>
+              <option value="Cotton">Cotton 🏵️</option>
+              <option value="Soybean">Soybean 🫘</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 12px; color: #64748b"
+              >Disease Status</label
+            >
+            <select
+              id="predDisease"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              "
+            >
+              <option value="Mild">Mild</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Severe">Severe</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          id="runPredBtn"
+          style="
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          🚀 Predict Yield
+        </button>
+
+        <div id="predResult" style="display: none; margin-top: 16px">
+          <div
+            id="predResultCard"
+            style="
+              background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+              color: #fff;
+              padding: 20px;
+              border-radius: 12px;
+              text-align: center;
+            "
+          >
+            <div style="font-size: 14px; opacity: 0.8">Predicted Yield</div>
+            <div style="font-size: 36px; font-weight: 700" id="predYieldVal">
+              0
+            </div>
+            <div style="opacity: 0.9">kg/hectare</div>
+            <span
+              id="predCategory"
+              style="
+                display: inline-block;
+                margin-top: 8px;
+                padding: 4px 12px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 20px;
+                font-size: 13px;
+              "
+              >High Yield</span
+            >
+          </div>
+          <div
+            id="predTips"
+            style="
+              margin-top: 12px;
+              padding: 12px;
+              background: #fef3c7;
+              border-radius: 8px;
+              font-size: 13px;
+              color: #92400e;
+            "
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Areas Modal -->
+    <div
+      id="savedModal"
+      class="dialog"
+      style="width: min(400px, calc(100vw - 24px))"
+    >
+      <header>
+        <h3>⭐ Saved Areas</h3>
+        <button class="closeBtn" id="savedCloseBtn">×</button>
+      </header>
+      <div
+        class="body"
+        style="padding: 16px; max-height: 400px; overflow-y: auto"
+      >
+        <div id="savedList" style="space-y: 8px"></div>
+        <p
+          id="noSavedMsg"
+          style="text-align: center; color: #94a3b8; padding: 20px"
+        >
+          No saved areas yet. Click "💾 Save Area" when viewing an area.
+        </p>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -450,7 +641,13 @@
       const imgOverlay = (src, w, h) =>
         new Promise((res) => {
           const i = new Image();
-          i.onload = () => res(L.imageOverlay(src, [[0, 0], [h, w]]));
+          i.onload = () =>
+            res(
+              L.imageOverlay(src, [
+                [0, 0],
+                [h, w],
+              ]),
+            );
           i.src = src;
         });
 
@@ -461,7 +658,7 @@
         try {
           const resp = await fetch(
             `${API_BASE}/api/maps/${encodeURIComponent(current)}`,
-            { credentials: "include" }
+            { credentials: "include" },
           );
           if (!resp.ok) throw new Error("Failed to load map");
           const d = await resp.json();
@@ -524,11 +721,41 @@
         const id = layer.feature.properties.id;
         const m = meta[id] || {};
         layer.off("mouseover mouseout click").on({
-          mouseover: () => layer.setStyle({ fillColor: m.hover || "#ffe6e6" }),
-          mouseout: () => layer.setStyle({ fillColor: m.bg || "#fff" }),
+          mouseover: (e) => {
+            layer.setStyle({ fillColor: m.hover || "#ffe6e6" });
+            showHoverTooltip(e, m, id);
+          },
+          mouseout: () => {
+            layer.setStyle({ fillColor: m.bg || "#fff" });
+            hideHoverTooltip();
+          },
           click: (e) => openInfo(e, m),
         });
       }
+
+      // Hover Tooltip
+      const tooltip = document.getElementById("hoverTooltip");
+      function showHoverTooltip(e, m, id) {
+        const title = m.title || id || "Unknown Area";
+        const desc =
+          m.subtitle ||
+          m.desc ||
+          "Click to view details and get AI yield prediction";
+        document.getElementById("tooltipTitle").textContent = title;
+        document.getElementById("tooltipDesc").textContent = desc;
+        tooltip.style.display = "block";
+        tooltip.style.left = e.originalEvent.clientX + 15 + "px";
+        tooltip.style.top = e.originalEvent.clientY + 15 + "px";
+      }
+      function hideHoverTooltip() {
+        tooltip.style.display = "none";
+      }
+      document.addEventListener("mousemove", (e) => {
+        if (tooltip.style.display === "block") {
+          tooltip.style.left = e.clientX + 15 + "px";
+          tooltip.style.top = e.clientY + 15 + "px";
+        }
+      });
 
       function clampAndFlipPopup(el, x, y) {
         const margin = 12;
@@ -550,15 +777,15 @@
           x + r.width + margin <= vw
             ? x
             : x - r.width - margin >= 0
-            ? x - r.width
-            : Math.max(margin, vw - margin - r.width);
+              ? x - r.width
+              : Math.max(margin, vw - margin - r.width);
 
         let top =
           y + r.height + bottom <= vh
             ? y
             : y - r.height - margin >= topBar
-            ? y - r.height
-            : topBar;
+              ? y - r.height
+              : topBar;
 
         el.style.left = left + "px";
         el.style.top = top + "px";
@@ -595,7 +822,7 @@
           ? `<strong>Documents:</strong><br>${m.docs
               .map(
                 (d) =>
-                  `<a href="${d.url}" target="_blank" rel="noopener">${d.title}</a>`
+                  `<a href="${d.url}" target="_blank" rel="noopener">${d.title}</a>`,
               )
               .join("<br>")}`
           : "";
@@ -640,7 +867,10 @@
       });
 
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && $("#customPopup").classList.contains("open")) {
+        if (
+          e.key === "Escape" &&
+          $("#customPopup").classList.contains("open")
+        ) {
           closeInfo();
         }
       });
@@ -651,7 +881,7 @@
           clampAndFlipPopup(
             p,
             parseFloat(p.dataset._lastX),
-            parseFloat(p.dataset._lastY)
+            parseFloat(p.dataset._lastY),
           );
         }
       });
@@ -662,7 +892,7 @@
           clampAndFlipPopup(
             p,
             parseFloat(p.dataset._lastX),
-            parseFloat(p.dataset._lastY)
+            parseFloat(p.dataset._lastY),
           );
         }
       });
@@ -736,7 +966,11 @@
         const last = polyline.getLatLngs().slice(-1)[0];
         if (last && last.distanceTo(ll) < 0.25) return;
         polyline.addLatLng(ll);
-        if (e.originalEvent && e.originalEvent.touches && e.originalEvent.cancelable) {
+        if (
+          e.originalEvent &&
+          e.originalEvent.touches &&
+          e.originalEvent.cancelable
+        ) {
           e.originalEvent.preventDefault();
         }
       }
@@ -832,6 +1066,264 @@
       };
 
       $("#brandLogo").addEventListener("click", () => location.reload());
+
+      // ========== PREDICTION MODAL ==========
+      const predModal = document.getElementById("predictionModal");
+      const predCloseBtn = document.getElementById("predCloseBtn");
+      let currentAreaMeta = null;
+      let savedActiveLayerData = null;
+
+      function openPredictionModal() {
+        if (!activeLayer) {
+          alert("Please click on an area first");
+          return;
+        }
+        const id = activeLayer.feature.properties.id;
+        currentAreaMeta = meta[id] || {};
+
+        document.getElementById("predAreaName").textContent =
+          currentAreaMeta.title || id;
+        document.getElementById("predAreaDesc").textContent =
+          currentAreaMeta.subtitle || currentAreaMeta.desc || "";
+        document.getElementById("predResult").style.display = "none";
+
+        predModal.classList.add("open");
+        predModal.style.display = "block";
+        predModal.style.opacity = "1";
+        predModal.style.left = "50%";
+        predModal.style.top = "50%";
+        predModal.style.transform = "translate(-50%, -50%)";
+      }
+
+      function openPredictionModalWithData() {
+        if (!savedActiveLayerData) {
+          alert("Please click on an area first");
+          return;
+        }
+        const id = savedActiveLayerData.id;
+        currentAreaMeta = meta[id] || {};
+
+        document.getElementById("predAreaName").textContent =
+          currentAreaMeta.title || id;
+        document.getElementById("predAreaDesc").textContent =
+          currentAreaMeta.subtitle || currentAreaMeta.desc || "";
+        document.getElementById("predResult").style.display = "none";
+
+        predModal.classList.add("open");
+        predModal.style.display = "block";
+        predModal.style.opacity = "1";
+        predModal.style.left = "50%";
+        predModal.style.top = "50%";
+        predModal.style.transform = "translate(-50%, -50%)";
+      }
+
+      function closePredictionModal() {
+        predModal.classList.remove("open");
+        predModal.style.display = "none";
+      }
+
+      predCloseBtn.onclick = closePredictionModal;
+
+      // Add "Predict" button to popup
+      function addPredictButton() {
+        const docsDiv = document.getElementById("pDocs");
+        if (!docsDiv.querySelector("#predictBtn")) {
+          const btn = document.createElement("button");
+          btn.id = "predictBtn";
+          btn.innerHTML = "🚀 Predict Yield";
+          btn.style.cssText =
+            "margin-top:12px; padding:10px 20px; background:linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; width:100%;";
+          btn.onclick = () => {
+            // Save activeLayer data before closing
+            if (activeLayer) {
+              savedActiveLayerData = {
+                id: activeLayer.feature.properties.id,
+                layer: activeLayer,
+              };
+            }
+            closeInfo();
+            openPredictionModalWithData();
+          };
+          docsDiv.appendChild(btn);
+        }
+      }
+
+      // Run prediction
+      document.getElementById("runPredBtn").onclick = async () => {
+        const crop = document.getElementById("predCrop").value;
+        const disease = document.getElementById("predDisease").value;
+
+        // Generate region from area or use default
+        const regions = [
+          "North India",
+          "South India",
+          "East Africa",
+          "South USA",
+          "Central USA",
+        ];
+        const region = regions[Math.floor(Math.random() * regions.length)];
+
+        try {
+          const resp = await fetch(`${API_BASE}/api/agrodrishti/predict`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              crop_type: crop,
+              region: region,
+              soil_moisture: 30 + Math.random() * 15,
+              soil_ph: 6 + Math.random() * 1.5,
+              temperature: 25 + Math.random() * 10,
+              rainfall: 100 + Math.random() * 150,
+              humidity: 60 + Math.random() * 25,
+              sunlight_hours: 6 + Math.random() * 3,
+              irrigation_type: "Drip",
+              fertilizer_type: "Organic",
+              pesticide_usage: 10 + Math.random() * 15,
+              total_days: 100 + Math.floor(Math.random() * 50),
+              ndvi: 0.5 + Math.random() * 0.4,
+              crop_disease_status: disease,
+            }),
+          });
+
+          const data = await resp.json();
+          if (data.success) {
+            const pred = data.prediction;
+            document.getElementById("predYieldVal").textContent =
+              pred.yield_kg_per_hectare.toLocaleString();
+            document.getElementById("predCategory").textContent =
+              pred.yield_category + " Yield";
+
+            const card = document.getElementById("predResultCard");
+            if (pred.yield_color === "green") {
+              card.style.background =
+                "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)";
+            } else if (pred.yield_color === "amber") {
+              card.style.background =
+                "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
+            } else {
+              card.style.background =
+                "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)";
+            }
+
+            document.getElementById("predTips").innerHTML =
+              "<strong>Tips:</strong> " + data.improvements.join(", ");
+            document.getElementById("predResult").style.display = "block";
+          }
+        } catch (err) {
+          console.error(err);
+          toast("Failed to get prediction");
+        }
+      };
+
+      // ========== SAVED AREAS ==========
+      const savedModal = document.getElementById("savedModal");
+      const savedCloseBtn = document.getElementById("savedCloseBtn");
+
+      function getSavedAreas() {
+        try {
+          return JSON.parse(localStorage.getItem("savedMapAreas") || "[]");
+        } catch {
+          return [];
+        }
+      }
+
+      function saveSavedAreas(areas) {
+        localStorage.setItem("savedMapAreas", JSON.stringify(areas));
+      }
+
+      document.getElementById("saveAreaBtn").onclick = () => {
+        // Try active layer first, then saved data
+        let areaId = null;
+        let areaLayer = null;
+
+        if (activeLayer) {
+          areaId = activeLayer.feature.properties.id;
+          areaLayer = activeLayer;
+        } else if (savedActiveLayerData) {
+          areaId = savedActiveLayerData.id;
+          areaLayer = savedActiveLayerData.layer;
+        }
+
+        if (!areaId) {
+          alert("Please click on an area first to save it");
+          return;
+        }
+        const id = areaId;
+        const m = meta[id] || {};
+        const saved = getSavedAreas();
+
+        if (saved.find((s) => s.id === id && s.map === current)) {
+          toast("Area already saved!");
+          return;
+        }
+
+        saved.push({
+          id: id,
+          map: current,
+          title: m.title || id,
+          subtitle: m.subtitle || "",
+          savedAt: new Date().toISOString(),
+        });
+        saveSavedAreas(saved);
+        toast("✅ Area saved!");
+      };
+
+      document.getElementById("viewSavedBtn").onclick = () => {
+        renderSavedList();
+        savedModal.classList.add("open");
+        savedModal.style.display = "block";
+        savedModal.style.opacity = "1";
+        savedModal.style.left = "50%";
+        savedModal.style.top = "50%";
+        savedModal.style.transform = "translate(-50%, -50%)";
+      };
+
+      savedCloseBtn.onclick = () => {
+        savedModal.classList.remove("open");
+        savedModal.style.display = "none";
+      };
+
+      function renderSavedList() {
+        const saved = getSavedAreas();
+        const container = document.getElementById("savedList");
+        const noMsg = document.getElementById("noSavedMsg");
+
+        if (saved.length === 0) {
+          container.innerHTML = "";
+          noMsg.style.display = "block";
+          return;
+        }
+
+        noMsg.style.display = "none";
+        container.innerHTML = saved
+          .map(
+            (s, i) => `
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:#f0f9ff; border-radius:10px; margin-bottom:8px;">
+            <div>
+              <div style="font-weight:600; color:#0369a1;">${s.title}</div>
+              <div style="font-size:12px; color:#64748b;">Map: ${s.map}</div>
+            </div>
+            <button onclick="removeSaved(${i})" style="background:#fee2e2; color:#dc2626; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">🗑️</button>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      window.removeSaved = (index) => {
+        const saved = getSavedAreas();
+        saved.splice(index, 1);
+        saveSavedAreas(saved);
+        renderSavedList();
+        toast("Removed from saved");
+      };
+
+      // Patch openInfo to add predict button
+      const originalOpenInfo = openInfo;
+      openInfo = function (evt, m) {
+        originalOpenInfo(evt, m);
+        setTimeout(addPredictButton, 50);
+      };
     </script>
   </body>
 </html>

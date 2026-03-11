@@ -20,11 +20,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ---- Local imports ----
-from .db import engine, Base
-from .models import User, Map, MapVersion, Feedback
-from .auth import init_app as init_auth, login_user, admin_required
-from .sanitizer import sanitize_html
-from .agrodrishti import init_agrodrishti
+from db import engine, Base
+from models import User, Map, MapVersion, Feedback
+from auth import init_app as init_auth, login_user, admin_required
+from sanitizer import sanitize_html
+from agrodrishti import init_agrodrishti
 
 
 # ======================================================

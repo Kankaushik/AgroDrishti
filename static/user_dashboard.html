@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Farmer Dashboard | AgroDrishti</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              agro: {
+                50: "#f0fdf4",
+                100: "#dcfce7",
+                200: "#bbf7d0",
+                300: "#86efac",
+                400: "#4ade80",
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+                800: "#166534",
+                900: "#14532d",
+                950: "#052e16",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+      .sidebar {
+        transition: transform 0.3s;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+      /* Dark Mode Styles */
+      .dark body,
+      .dark .bg-gray-50 {
+        background-color: #1a1a2e !important;
+      }
+      .dark .bg-white {
+        background-color: #16213e !important;
+      }
+      .dark .text-gray-800,
+      .dark .text-gray-700 {
+        color: #e5e5e5 !important;
+      }
+      .dark .text-gray-600,
+      .dark .text-gray-500 {
+        color: #b0b0b0 !important;
+      }
+      .dark .border-gray-100,
+      .dark .border-gray-200 {
+        border-color: #374151 !important;
+      }
+      .dark .bg-gray-50,
+      .dark .bg-gray-100 {
+        background-color: #1f2937 !important;
+      }
+      .dark header.sticky {
+        background-color: #16213e !important;
+        border-color: #374151 !important;
+      }
+      .dark .bg-gradient-to-br.from-green-50 {
+        background: linear-gradient(
+          to bottom right,
+          #1a3a2a,
+          #1f2937
+        ) !important;
+      }
+      .dark .bg-white\/80 {
+        background-color: rgba(22, 33, 62, 0.8) !important;
+      }
+      /* Responsive */
+      @media (max-width: 640px) {
+        .p-6 {
+          padding: 1rem;
+        }
+        .text-2xl {
+          font-size: 1.25rem;
+        }
+        .text-4xl {
+          font-size: 1.75rem;
+        }
+        .grid.sm\:grid-cols-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside
+        class="sidebar fixed lg:static w-64 bg-agro-950 h-screen flex flex-col z-40 -translate-x-full lg:translate-x-0"
+        id="sidebar"
+      >
+        <div class="p-5 border-b border-agro-900">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-lg bg-agro-500 flex items-center justify-center"
+            >
+              <i class="bi bi-geo-alt-fill text-white text-lg"></i>
+            </div>
+            <div>
+              <h1 class="text-lg font-bold text-white">AGRODRISHTI</h1>
+              <p class="text-agro-400 text-xs">Farmer Dashboard</p>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-agro-500 text-white"
+          >
+            <i class="bi bi-house-door"></i> Dashboard
+          </a>
+          <a
+            href="user.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-map"></i> MapLoom Viewer
+          </a>
+          <a
+            href="#predictions"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-cpu"></i> AI Predictions
+          </a>
+          <a
+            href="#weather"
+            onclick="scrollToWeather()"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-cloud-rain"></i> Weather
+          </a>
+          <a
+            href="#"
+            onclick="openSettingsModal()"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-gear"></i> Settings
+          </a>
+        </nav>
+        <div class="p-4 border-t border-agro-900">
+          <button
+            onclick="logout()"
+            class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition"
+          >
+            <i class="bi bi-box-arrow-left"></i> Logout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 lg:ml-0">
+        <!-- Top Bar -->
+        <header
+          class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-30"
+        >
+          <button class="lg:hidden text-gray-600" onclick="toggleSidebar()">
+            <i class="bi bi-list text-2xl"></i>
+          </button>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">Welcome, Farmer!</h2>
+            <p class="text-gray-500 text-sm">
+              Smart farming insights at your fingertips
+            </p>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-gray-500" id="currentDate"></span>
+            <div
+              class="w-10 h-10 rounded-full bg-agro-100 flex items-center justify-center"
+            >
+              <i class="bi bi-person text-agro-600 text-lg"></i>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-6">
+          <!-- Stats Cards -->
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-agro-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-thermometer-sun text-agro-600 text-xl"></i>
+                </div>
+                <span class="text-xs text-gray-400">Today</span>
+              </div>
+              <p class="text-2xl font-bold text-gray-800" id="tempValue">
+                28°C
+              </p>
+              <p class="text-gray-500 text-sm">Temperature</p>
+            </div>
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-droplet text-blue-600 text-xl"></i>
+                </div>
+                <span class="text-xs text-gray-400">Current</span>
+              </div>
+              <p class="text-2xl font-bold text-gray-800" id="humidValue">
+                65%
+              </p>
+              <p class="text-gray-500 text-sm">Humidity</p>
+            </div>
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-cloud-rain text-amber-600 text-xl"></i>
+                </div>
+                <span class="text-xs text-gray-400">Monthly</span>
+              </div>
+              <p class="text-2xl font-bold text-gray-800" id="rainValue">
+                180mm
+              </p>
+              <p class="text-gray-500 text-sm">Rainfall</p>
+            </div>
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-moisture text-purple-600 text-xl"></i>
+                </div>
+                <span class="text-xs text-gray-400">Avg</span>
+              </div>
+              <p class="text-2xl font-bold text-gray-800" id="phValue">6.5</p>
+              <p class="text-gray-500 text-sm">Soil pH</p>
+            </div>
+          </div>
+
+          <!-- AI Prediction Section -->
+          <section
+            id="predictions"
+            class="bg-white rounded-2xl border border-gray-100 p-6 mb-6"
+          >
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-xl bg-agro-500 flex items-center justify-center"
+                >
+                  <i class="bi bi-cpu text-white text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-800">
+                    AI Yield Prediction
+                  </h3>
+                  <p class="text-gray-500 text-sm">
+                    Predict crop yield based on farming conditions
+                  </p>
+                </div>
+              </div>
+              <span
+                class="px-3 py-1 bg-agro-100 text-agro-700 rounded-full text-xs font-medium"
+              >
+                <i class="bi bi-lightning-charge"></i> AI Powered
+              </span>
+            </div>
+
+            <!-- Crop & Region Selection -->
+            <div class="bg-agro-50 rounded-xl p-5 mb-6 border border-agro-100">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="bi bi-geo-alt text-agro-600"></i>
+                <span class="font-medium text-gray-800"
+                  >Select Crop & Region</span
+                >
+              </div>
+              <div class="grid md:grid-cols-4 gap-4">
+                <select
+                  id="cropSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                >
+                  <option value="">-- Select Crop --</option>
+                  <option value="Rice">Rice 🌾</option>
+                  <option value="Wheat">Wheat 🌾</option>
+                  <option value="Maize">Maize 🌽</option>
+                  <option value="Cotton">Cotton 🏵️</option>
+                  <option value="Soybean">Soybean 🫘</option>
+                </select>
+                <select
+                  id="regionSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  onchange="loadRegionDefaults()"
+                >
+                  <option value="">-- Select Region --</option>
+                  <option value="North India">North India</option>
+                  <option value="South India">South India</option>
+                  <option value="South USA">South USA</option>
+                  <option value="Central USA">Central USA</option>
+                  <option value="East Africa">East Africa</option>
+                </select>
+                <select
+                  id="irrigationSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                >
+                  <option value="Drip">Drip Irrigation</option>
+                  <option value="Sprinkler">Sprinkler</option>
+                  <option value="Manual">Manual</option>
+                </select>
+                <select
+                  id="fertilizerSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                >
+                  <option value="Organic">Organic</option>
+                  <option value="Inorganic">Inorganic</option>
+                  <option value="Mixed">Mixed</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Input Parameters -->
+            <div class="grid md:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Soil Moisture (%)</label
+                >
+                <input
+                  type="number"
+                  id="soilMoistureInput"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="15-50"
+                  value="30"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block">Soil pH</label>
+                <input
+                  type="number"
+                  id="soilPhInput"
+                  step="0.1"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="5.5-8.0"
+                  value="6.5"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Temperature (°C)</label
+                >
+                <input
+                  type="number"
+                  id="temperatureInput"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="15-40"
+                  value="28"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Rainfall (mm)</label
+                >
+                <input
+                  type="number"
+                  id="rainfallInput"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="50-300"
+                  value="120"
+                />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-6">
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Humidity (%)</label
+                >
+                <input
+                  type="number"
+                  id="humidityInput"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="30-95"
+                  value="65"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Sunlight (hours)</label
+                >
+                <input
+                  type="number"
+                  id="sunlightInput"
+                  step="0.1"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="4-10"
+                  value="7"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >NDVI Index</label
+                >
+                <input
+                  type="number"
+                  id="ndviInput"
+                  step="0.01"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="0.2-1.0"
+                  value="0.65"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Disease Status</label
+                >
+                <select
+                  id="diseaseSelect"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                >
+                  <option value="Mild">Mild</option>
+                  <option value="Moderate">Moderate</option>
+                  <option value="Severe">Severe</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Pesticide Usage (ml)</label
+                >
+                <input
+                  type="number"
+                  id="pesticideInput"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="5-30"
+                  value="10"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Growing Days</label
+                >
+                <input
+                  type="number"
+                  id="daysInput"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-agro-500 outline-none"
+                  placeholder="90-150"
+                  value="120"
+                />
+              </div>
+              <div class="flex items-end">
+                <button
+                  onclick="getYieldPrediction()"
+                  class="w-full bg-agro-500 hover:bg-agro-600 text-white px-6 py-3 rounded-xl font-medium transition flex items-center justify-center gap-2"
+                >
+                  <i class="bi bi-graph-up"></i> Predict Yield
+                </button>
+              </div>
+            </div>
+
+            <!-- Prediction Results -->
+            <div id="predictionResult" class="hidden">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="bi bi-star-fill text-amber-500"></i>
+                <span class="font-semibold text-gray-800"
+                  >Yield Prediction Results</span
+                >
+              </div>
+
+              <!-- Main Yield Card -->
+              <div
+                id="yieldCard"
+                class="bg-gradient-to-r from-agro-500 to-agro-600 text-white p-6 rounded-2xl mb-4"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-white/70 text-sm mb-1">Predicted Yield</p>
+                    <p class="text-4xl font-bold" id="yieldValue">0</p>
+                    <p class="text-white/80">kg per hectare</p>
+                  </div>
+                  <div class="text-right">
+                    <span id="cropEmoji" class="text-5xl">🌾</span>
+                    <p class="text-lg font-semibold mt-2" id="cropName">Rice</p>
+                    <span
+                      id="yieldCategory"
+                      class="px-3 py-1 bg-white/20 rounded-full text-sm"
+                      >High</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recommendations -->
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="bi bi-lightbulb text-amber-600"></i>
+                  <span class="font-medium text-amber-800"
+                    >Improvement Suggestions</span
+                  >
+                </div>
+                <ul
+                  id="improvementsList"
+                  class="text-amber-700 text-sm space-y-1"
+                >
+                  <!-- Filled by JS -->
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Soil & Weather Analysis -->
+          <div id="weather" class="grid lg:grid-cols-2 gap-6 mb-6 scroll-mt-24">
+            <!-- Soil Health -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-layers text-amber-600"></i>
+                </div>
+                <h3 class="font-bold text-gray-800">Farm Conditions</h3>
+              </div>
+              <div class="space-y-4" id="soilBars">
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Soil Moisture</span>
+                    <span class="font-medium text-agro-600" id="nDisplay"
+                      >-</span
+                    >
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      id="nBar"
+                      class="h-full bg-agro-500 rounded-full transition-all"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Soil pH</span>
+                    <span class="font-medium text-blue-600" id="pDisplay"
+                      >-</span
+                    >
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      id="pBar"
+                      class="h-full bg-blue-500 rounded-full transition-all"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Sunlight Hours</span>
+                    <span class="font-medium text-amber-600" id="kDisplay"
+                      >-</span
+                    >
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      id="kBar"
+                      class="h-full bg-amber-500 rounded-full transition-all"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Temperature</span>
+                    <span class="font-medium text-purple-600" id="phDisplay"
+                      >-</span
+                    >
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      id="phBar"
+                      class="h-full bg-purple-500 rounded-full transition-all"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rainfall Forecast -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+              <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center"
+                  >
+                    <i class="bi bi-cloud-rain text-blue-600"></i>
+                  </div>
+                  <h3 class="font-bold text-gray-800">Weather Forecast</h3>
+                </div>
+                <button
+                  onclick="fetchWeather()"
+                  class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                >
+                  <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+              </div>
+
+              <!-- Current Weather Card -->
+              <div
+                class="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-4 mb-4 text-white"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm text-white/80">Current Weather</p>
+                    <p class="text-3xl font-bold" id="weatherTemp">28°C</p>
+                    <p class="text-sm" id="weatherCondition">Partly Cloudy</p>
+                  </div>
+                  <div class="text-5xl" id="weatherIcon">
+                    <i class="bi bi-cloud-sun"></i>
+                  </div>
+                </div>
+                <div class="flex gap-4 mt-3 text-sm">
+                  <span
+                    ><i class="bi bi-droplet"></i>
+                    <span id="weatherHumid">65%</span></span
+                  >
+                  <span
+                    ><i class="bi bi-wind"></i>
+                    <span id="weatherWind">12 km/h</span></span
+                  >
+                </div>
+              </div>
+
+              <div class="space-y-3" id="rainfallForecast">
+                <div
+                  class="flex items-center justify-between p-3 bg-blue-50 rounded-xl"
+                >
+                  <div class="flex items-center gap-3">
+                    <i class="bi bi-cloud-drizzle text-blue-500 text-lg"></i>
+                    <span class="text-gray-700">Today</span>
+                  </div>
+                  <span class="font-medium text-blue-600">5mm</span>
+                </div>
+                <div
+                  class="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
+                >
+                  <div class="flex items-center gap-3">
+                    <i class="bi bi-cloud text-gray-400 text-lg"></i>
+                    <span class="text-gray-700">Tomorrow</span>
+                  </div>
+                  <span class="font-medium text-gray-600">2mm</span>
+                </div>
+                <div
+                  class="flex items-center justify-between p-3 bg-blue-50 rounded-xl"
+                >
+                  <div class="flex items-center gap-3">
+                    <i class="bi bi-cloud-rain text-blue-500 text-lg"></i>
+                    <span class="text-gray-700">Day 3</span>
+                  </div>
+                  <span class="font-medium text-blue-600">15mm</span>
+                </div>
+                <div
+                  class="flex items-center justify-between p-3 bg-amber-50 rounded-xl"
+                >
+                  <div class="flex items-center gap-3">
+                    <i class="bi bi-sun text-amber-500 text-lg"></i>
+                    <span class="text-gray-700">Day 4</span>
+                  </div>
+                  <span class="font-medium text-amber-600">0mm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recommendations Section -->
+          <section
+            class="mb-6 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-6 border border-green-200"
+          >
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center"
+              >
+                <i class="bi bi-lightbulb text-white text-lg"></i>
+              </div>
+              <h3 class="font-bold text-green-800 text-lg">
+                Smart Farming Recommendations
+              </h3>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-white/80 rounded-xl p-4">
+                <h4
+                  class="font-semibold text-gray-800 mb-2 flex items-center gap-2"
+                >
+                  <i class="bi bi-droplet text-blue-500"></i> Irrigation Tips
+                </h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>
+                    • Water crops early morning or late evening to reduce
+                    evaporation
+                  </li>
+                  <li>• Use drip irrigation for 30-50% water savings</li>
+                  <li>• Monitor soil moisture before watering</li>
+                </ul>
+              </div>
+              <div class="bg-white/80 rounded-xl p-4">
+                <h4
+                  class="font-semibold text-gray-800 mb-2 flex items-center gap-2"
+                >
+                  <i class="bi bi-tree text-green-500"></i> Crop Management
+                </h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>• Rotate crops to improve soil health</li>
+                  <li>• Apply organic fertilizers for sustainable growth</li>
+                  <li>• Regular pest monitoring reduces yield loss</li>
+                </ul>
+              </div>
+              <div class="bg-white/80 rounded-xl p-4">
+                <h4
+                  class="font-semibold text-gray-800 mb-2 flex items-center gap-2"
+                >
+                  <i class="bi bi-graph-up text-amber-500"></i> Yield
+                  Optimization
+                </h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>• Maintain soil pH between 6.0-7.5 for most crops</li>
+                  <li>
+                    • Ensure 6-8 hours of sunlight for optimal photosynthesis
+                  </li>
+                  <li>• Use AI predictions to plan planting schedule</li>
+                </ul>
+              </div>
+              <div class="bg-white/80 rounded-xl p-4">
+                <h4
+                  class="font-semibold text-gray-800 mb-2 flex items-center gap-2"
+                >
+                  <i class="bi bi-shield-check text-purple-500"></i> Disease
+                  Prevention
+                </h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>• Inspect plants weekly for early disease signs</li>
+                  <li>• Maintain proper plant spacing for air circulation</li>
+                  <li>• Use resistant crop varieties when available</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Quick Actions -->
+          <div class="grid sm:grid-cols-3 gap-4">
+            <a
+              href="user.html"
+              class="bg-agro-500 hover:bg-agro-600 text-white p-5 rounded-2xl flex items-center gap-4 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+              >
+                <i class="bi bi-map text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">Open MapLoom</h4>
+                <p class="text-white/70 text-sm">View & select areas</p>
+              </div>
+            </a>
+            <a
+              href="#predictions"
+              class="bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-2xl flex items-center gap-4 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+              >
+                <i class="bi bi-cpu text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">Get AI Prediction</h4>
+                <p class="text-white/70 text-sm">Crop recommendations</p>
+              </div>
+            </a>
+            <a
+              href="#weather"
+              class="bg-amber-500 hover:bg-amber-600 text-white p-5 rounded-2xl flex items-center gap-4 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+              >
+                <i class="bi bi-cloud-sun text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">Weather Updates</h4>
+                <p class="text-white/70 text-sm">7-day forecast</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 py-6 border-t border-gray-200 dark:border-gray-700">
+          <div
+            class="flex flex-col md:flex-row items-center justify-between gap-4 px-6"
+          >
+            <div class="flex items-center gap-2">
+              <div
+                class="w-8 h-8 rounded-lg bg-agro-500 flex items-center justify-center"
+              >
+                <i class="bi bi-geo-alt-fill text-white"></i>
+              </div>
+              <span class="font-bold text-gray-700">AGRODRISHTI</span>
+            </div>
+            <p class="text-gray-500 text-sm">
+              © 2026 AgroDrishti. Powered by MapLoom Technology.
+            </p>
+            <div class="flex gap-4">
+              <a href="#" class="text-gray-500 hover:text-agro-600 text-sm"
+                >Privacy</a
+              >
+              <a href="#" class="text-gray-500 hover:text-agro-600 text-sm"
+                >Terms</a
+              >
+              <a href="#" class="text-gray-500 hover:text-agro-600 text-sm"
+                >Support</a
+              >
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div
+      id="settingsModal"
+      class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center"
+    >
+      <div
+        class="bg-white rounded-2xl w-full max-w-md mx-4 overflow-hidden shadow-2xl"
+      >
+        <div class="bg-gradient-to-r from-agro-600 to-green-600 p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-white text-lg font-bold flex items-center gap-2">
+              <i class="bi bi-gear"></i> Settings
+            </h3>
+            <button
+              onclick="closeSettingsModal()"
+              class="text-white/80 hover:text-white"
+            >
+              <i class="bi bi-x-lg text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <div class="p-5 space-y-4">
+          <!-- Notifications -->
+          <div
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+          >
+            <div class="flex items-center gap-3">
+              <i class="bi bi-bell text-agro-600 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Notifications</p>
+                <p class="text-xs text-gray-500">
+                  Get alerts for weather changes
+                </p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="notifToggle"
+                class="sr-only peer"
+                checked
+              />
+              <div
+                class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-agro-500"
+              ></div>
+            </label>
+          </div>
+
+          <!-- Dark Mode -->
+          <div
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+          >
+            <div class="flex items-center gap-3">
+              <i class="bi bi-moon text-purple-600 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Dark Mode</p>
+                <p class="text-xs text-gray-500">Reduce eye strain at night</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="darkToggle" class="sr-only peer" />
+              <div
+                class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"
+              ></div>
+            </label>
+          </div>
+
+          <!-- Temperature Unit -->
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="bi bi-thermometer-half text-red-500 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Temperature Unit</p>
+                <p class="text-xs text-gray-500">Choose your preferred unit</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button
+                id="celsiusBtn"
+                onclick="setTempUnit('C')"
+                class="flex-1 py-2 rounded-lg bg-agro-500 text-white font-medium"
+              >
+                °C Celsius
+              </button>
+              <button
+                id="fahrenheitBtn"
+                onclick="setTempUnit('F')"
+                class="flex-1 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium"
+              >
+                °F Fahrenheit
+              </button>
+            </div>
+          </div>
+
+          <!-- Language -->
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="bi bi-translate text-blue-500 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Language</p>
+                <p class="text-xs text-gray-500">Select your language</p>
+              </div>
+            </div>
+            <select
+              id="langSelect"
+              class="w-full p-2 border border-gray-200 rounded-lg"
+            >
+              <option value="en">English</option>
+              <option value="hi">हिंदी (Hindi)</option>
+              <option value="te">తెలుగు (Telugu)</option>
+              <option value="ta">தமிழ் (Tamil)</option>
+            </select>
+          </div>
+
+          <button
+            onclick="saveSettings()"
+            class="w-full py-3 bg-agro-500 text-white rounded-xl font-semibold hover:bg-agro-600 transition"
+          >
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Date display
+      document.getElementById("currentDate").textContent =
+        new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+      // Sidebar toggle
+      function toggleSidebar() {
+        document
+          .getElementById("sidebar")
+          .classList.toggle("-translate-x-full");
+      }
+
+      // Logout
+      async function logout() {
+        await fetch("/api/logout", { method: "POST" });
+        location.href = "index.html";
+      }
+
+      // Region-based default data
+      const regionDefaults = {
+        "North India": {
+          temp: 28,
+          humidity: 55,
+          rainfall: 120,
+          soilMoisture: 32,
+          soilPh: 7.0,
+          sunlight: 7.5,
+        },
+        "South India": {
+          temp: 32,
+          humidity: 80,
+          rainfall: 200,
+          soilMoisture: 38,
+          soilPh: 6.2,
+          sunlight: 8.0,
+        },
+        "South USA": {
+          temp: 30,
+          humidity: 65,
+          rainfall: 150,
+          soilMoisture: 28,
+          soilPh: 6.8,
+          sunlight: 8.5,
+        },
+        "Central USA": {
+          temp: 25,
+          humidity: 60,
+          rainfall: 130,
+          soilMoisture: 30,
+          soilPh: 7.2,
+          sunlight: 7.8,
+        },
+        "East Africa": {
+          temp: 28,
+          humidity: 70,
+          rainfall: 180,
+          soilMoisture: 35,
+          soilPh: 6.5,
+          sunlight: 9.0,
+        },
+      };
+
+      function loadRegionDefaults() {
+        const region = document.getElementById("regionSelect").value;
+        if (!region || !regionDefaults[region]) return;
+
+        const data = regionDefaults[region];
+        document.getElementById("temperatureInput").value = data.temp;
+        document.getElementById("humidityInput").value = data.humidity;
+        document.getElementById("rainfallInput").value = data.rainfall;
+        document.getElementById("soilMoistureInput").value = data.soilMoisture;
+        document.getElementById("soilPhInput").value = data.soilPh;
+        document.getElementById("sunlightInput").value = data.sunlight;
+
+        // Update stats cards
+        document.getElementById("tempValue").textContent = data.temp + "°C";
+        document.getElementById("humidValue").textContent = data.humidity + "%";
+        document.getElementById("rainValue").textContent = data.rainfall + "mm";
+        document.getElementById("phValue").textContent = data.soilPh;
+
+        // Update soil bars
+        updateSoilBars(data);
+      }
+
+      function updateSoilBars(data) {
+        document.getElementById("nDisplay").textContent =
+          data.soilMoisture + "%";
+        document.getElementById("pDisplay").textContent = data.soilPh;
+        document.getElementById("kDisplay").textContent =
+          data.sunlight + " hrs";
+        document.getElementById("phDisplay").textContent = data.temp + "°C";
+
+        document.getElementById("nBar").style.width =
+          (data.soilMoisture / 50) * 100 + "%";
+        document.getElementById("pBar").style.width =
+          (data.soilPh / 10) * 100 + "%";
+        document.getElementById("kBar").style.width =
+          (data.sunlight / 12) * 100 + "%";
+        document.getElementById("phBar").style.width =
+          (data.temp / 45) * 100 + "%";
+      }
+
+      async function getYieldPrediction() {
+        const crop = document.getElementById("cropSelect").value;
+        const region = document.getElementById("regionSelect").value;
+
+        if (!crop || !region) {
+          alert("Please select both crop type and region.");
+          return;
+        }
+
+        const requestData = {
+          crop_type: crop,
+          region: region,
+          soil_moisture:
+            parseFloat(document.getElementById("soilMoistureInput").value) ||
+            30,
+          soil_ph:
+            parseFloat(document.getElementById("soilPhInput").value) || 6.5,
+          temperature:
+            parseFloat(document.getElementById("temperatureInput").value) || 28,
+          rainfall:
+            parseFloat(document.getElementById("rainfallInput").value) || 120,
+          humidity:
+            parseFloat(document.getElementById("humidityInput").value) || 65,
+          sunlight_hours:
+            parseFloat(document.getElementById("sunlightInput").value) || 7,
+          irrigation_type: document.getElementById("irrigationSelect").value,
+          fertilizer_type: document.getElementById("fertilizerSelect").value,
+          pesticide_usage:
+            parseFloat(document.getElementById("pesticideInput").value) || 10,
+          total_days:
+            parseInt(document.getElementById("daysInput").value) || 120,
+          ndvi: parseFloat(document.getElementById("ndviInput").value) || 0.65,
+          crop_disease_status: document.getElementById("diseaseSelect").value,
+        };
+
+        try {
+          const response = await fetch("/api/agrodrishti/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            displayYieldResults(result);
+          } else {
+            alert("Prediction failed. Please try again.");
+          }
+        } catch (error) {
+          console.error("Prediction error:", error);
+          alert("Error connecting to server.");
+        }
+      }
+
+      function displayYieldResults(result) {
+        document.getElementById("predictionResult").classList.remove("hidden");
+
+        const pred = result.prediction;
+
+        // Update yield card
+        document.getElementById("yieldValue").textContent =
+          pred.yield_kg_per_hectare.toLocaleString();
+        document.getElementById("cropEmoji").textContent = pred.crop_emoji;
+        document.getElementById("cropName").textContent = pred.crop_type;
+        document.getElementById("yieldCategory").textContent =
+          pred.yield_category + " Yield";
+
+        // Update card color based on yield category
+        const card = document.getElementById("yieldCard");
+        card.className = "p-6 rounded-2xl mb-4 text-white ";
+        if (pred.yield_color === "green") {
+          card.className += "bg-gradient-to-r from-green-500 to-green-600";
+        } else if (pred.yield_color === "amber") {
+          card.className += "bg-gradient-to-r from-amber-500 to-amber-600";
+        } else {
+          card.className += "bg-gradient-to-r from-red-500 to-red-600";
+        }
+
+        // Update improvements list
+        const improvementsList = document.getElementById("improvementsList");
+        improvementsList.innerHTML = result.improvements
+          .map(
+            (imp) =>
+              `<li><i class="bi bi-check-circle-fill mr-2"></i>${imp}</li>`,
+          )
+          .join("");
+
+        // Update stats with actual values
+        document.getElementById("tempValue").textContent =
+          result.input_data.temperature_C + "°C";
+        document.getElementById("humidValue").textContent =
+          result.input_data["humidity_%"] + "%";
+        document.getElementById("rainValue").textContent =
+          result.input_data.rainfall_mm + "mm";
+        document.getElementById("phValue").textContent =
+          result.input_data.soil_pH;
+      }
+
+      // ========== WEATHER FUNCTIONS ==========
+      function scrollToWeather() {
+        event.preventDefault();
+        document
+          .getElementById("weather")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function fetchWeather() {
+        // Simulated weather data - in production, use a real weather API
+        const conditions = [
+          { condition: "Sunny", icon: "bi-sun", temp: 32, humid: 45, wind: 8 },
+          {
+            condition: "Partly Cloudy",
+            icon: "bi-cloud-sun",
+            temp: 28,
+            humid: 55,
+            wind: 12,
+          },
+          {
+            condition: "Cloudy",
+            icon: "bi-cloud",
+            temp: 25,
+            humid: 65,
+            wind: 15,
+          },
+          {
+            condition: "Light Rain",
+            icon: "bi-cloud-drizzle",
+            temp: 23,
+            humid: 75,
+            wind: 10,
+          },
+          {
+            condition: "Rainy",
+            icon: "bi-cloud-rain",
+            temp: 22,
+            humid: 85,
+            wind: 18,
+          },
+        ];
+
+        const current =
+          conditions[Math.floor(Math.random() * conditions.length)];
+        const tempUnit = localStorage.getItem("tempUnit") || "C";
+        let displayTemp = current.temp;
+
+        if (tempUnit === "F") {
+          displayTemp = Math.round((current.temp * 9) / 5 + 32);
+        }
+
+        document.getElementById("weatherTemp").textContent =
+          displayTemp + "°" + tempUnit;
+        document.getElementById("weatherCondition").textContent =
+          current.condition;
+        document.getElementById("weatherIcon").innerHTML =
+          `<i class="bi ${current.icon}"></i>`;
+        document.getElementById("weatherHumid").textContent =
+          current.humid + "%";
+        document.getElementById("weatherWind").textContent =
+          current.wind + " km/h";
+
+        // Update forecast
+        updateForecast(tempUnit);
+      }
+
+      function updateForecast(tempUnit) {
+        const forecast = [
+          { day: "Today", rain: 5, icon: "bi-cloud-drizzle", color: "blue" },
+          { day: "Tomorrow", rain: 2, icon: "bi-cloud", color: "gray" },
+          { day: "Day 3", rain: 15, icon: "bi-cloud-rain", color: "blue" },
+          { day: "Day 4", rain: 0, icon: "bi-sun", color: "amber" },
+        ];
+
+        const forecastHtml = forecast
+          .map(
+            (f) => `
+          <div class="flex items-center justify-between p-3 bg-${f.color}-50 rounded-xl">
+            <div class="flex items-center gap-3">
+              <i class="bi ${f.icon} text-${f.color}-500 text-lg"></i>
+              <span class="text-gray-700">${f.day}</span>
+            </div>
+            <span class="font-medium text-${f.color}-600">${f.rain}mm</span>
+          </div>
+        `,
+          )
+          .join("");
+
+        document.getElementById("rainfallForecast").innerHTML = forecastHtml;
+      }
+
+      // Initialize weather on page load
+      fetchWeather();
+
+      // ========== SETTINGS FUNCTIONS ==========
+      function openSettingsModal() {
+        event.preventDefault();
+        document.getElementById("settingsModal").classList.remove("hidden");
+        document.getElementById("settingsModal").classList.add("flex");
+        loadSettings();
+      }
+
+      function closeSettingsModal() {
+        document.getElementById("settingsModal").classList.add("hidden");
+        document.getElementById("settingsModal").classList.remove("flex");
+      }
+
+      function loadSettings() {
+        const notif = localStorage.getItem("notifications") !== "false";
+        const dark = localStorage.getItem("darkMode") === "true";
+        const tempUnit = localStorage.getItem("tempUnit") || "C";
+        const lang = localStorage.getItem("language") || "en";
+
+        document.getElementById("notifToggle").checked = notif;
+        document.getElementById("darkToggle").checked = dark;
+        document.getElementById("langSelect").value = lang;
+        setTempUnit(tempUnit);
+      }
+
+      function setTempUnit(unit) {
+        if (unit === "C") {
+          document.getElementById("celsiusBtn").className =
+            "flex-1 py-2 rounded-lg bg-agro-500 text-white font-medium";
+          document.getElementById("fahrenheitBtn").className =
+            "flex-1 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium";
+        } else {
+          document.getElementById("celsiusBtn").className =
+            "flex-1 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium";
+          document.getElementById("fahrenheitBtn").className =
+            "flex-1 py-2 rounded-lg bg-agro-500 text-white font-medium";
+        }
+        localStorage.setItem("tempUnit", unit);
+      }
+
+      function saveSettings() {
+        localStorage.setItem(
+          "notifications",
+          document.getElementById("notifToggle").checked,
+        );
+        localStorage.setItem(
+          "darkMode",
+          document.getElementById("darkToggle").checked,
+        );
+        localStorage.setItem(
+          "language",
+          document.getElementById("langSelect").value,
+        );
+
+        // Apply dark mode
+        applyDarkMode();
+
+        // Apply language
+        applyLanguage();
+
+        // Refresh weather with new unit
+        fetchWeather();
+        closeSettingsModal();
+        alert("Settings saved successfully!");
+      }
+
+      function applyDarkMode() {
+        const isDark = localStorage.getItem("darkMode") === "true";
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+
+      function applyLanguage() {
+        const lang = localStorage.getItem("language") || "en";
+        const translations = {
+          en: {
+            welcome: "Welcome, Farmer!",
+            dashboard: "Dashboard",
+            maploom: "MapLoom Viewer",
+            predictions: "AI Predictions",
+            weather: "Weather",
+            settings: "Settings",
+          },
+          hi: {
+            welcome: "स्वागत, किसान!",
+            dashboard: "डैशबोर्ड",
+            maploom: "मैपलूम व्यूअर",
+            predictions: "AI पूर्वानुमान",
+            weather: "मौसम",
+            settings: "सेटिंग्स",
+          },
+          te: {
+            welcome: "స్వాగతం, రైతు!",
+            dashboard: "డాష్‌బోర్డ్",
+            maploom: "మాప్‌లూమ్",
+            predictions: "AI అంచనాలు",
+            weather: "వాతావరణం",
+            settings: "సెట్టింగ్స్",
+          },
+          ta: {
+            welcome: "வரவேற்பு, விவஸாயி!",
+            dashboard: "டாஷ்போர்ட்",
+            maploom: "மேப்லூம்",
+            predictions: "AI கணிப்புகள்",
+            weather: "வானிலை",
+            settings: "அமைப்புகள்",
+          },
+        };
+        const t = translations[lang] || translations.en;
+        // Update UI text elements
+        const welcomeEl = document.querySelector("h2.text-xl");
+        if (welcomeEl) welcomeEl.textContent = t.welcome;
+      }
+
+      // Apply settings on page load
+      applyDarkMode();
+      applyLanguage();
+    </script>
+  </body>
+</html>

@@ -8,7 +8,7 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 # Pure-Python password hashing (no bcrypt builds needed)
 from passlib.hash import pbkdf2_sha256 as _pwd
 
-from .db import Base
+from db import Base
 
 class User(Base):
     __tablename__ = "users"

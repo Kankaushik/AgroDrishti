@@ -1,0 +1,1129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard | AgroDrishti</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              agro: {
+                50: "#f0fdf4",
+                100: "#dcfce7",
+                200: "#bbf7d0",
+                300: "#86efac",
+                400: "#4ade80",
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+                800: "#166534",
+                900: "#14532d",
+                950: "#052e16",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+      .sidebar {
+        transition: transform 0.3s;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+      /* Dark Mode Styles */
+      .dark body,
+      .dark .bg-gray-50 {
+        background-color: #1a1a2e !important;
+      }
+      .dark .bg-white {
+        background-color: #16213e !important;
+      }
+      .dark .text-gray-800,
+      .dark .text-gray-700 {
+        color: #e5e5e5 !important;
+      }
+      .dark .text-gray-600,
+      .dark .text-gray-500 {
+        color: #b0b0b0 !important;
+      }
+      .dark .border-gray-100,
+      .dark .border-gray-200 {
+        border-color: #374151 !important;
+      }
+      .dark .bg-gray-50,
+      .dark .bg-gray-100 {
+        background-color: #1f2937 !important;
+      }
+      .dark header.sticky {
+        background-color: #16213e !important;
+        border-color: #374151 !important;
+      }
+      /* Responsive */
+      @media (max-width: 640px) {
+        .p-6 {
+          padding: 1rem;
+        }
+        .text-2xl {
+          font-size: 1.25rem;
+        }
+        .grid {
+          gap: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside
+        class="sidebar fixed lg:static w-64 bg-agro-950 h-screen flex flex-col z-40 -translate-x-full lg:translate-x-0"
+        id="sidebar"
+      >
+        <div class="p-5 border-b border-agro-900">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-lg bg-red-500 flex items-center justify-center"
+            >
+              <i class="bi bi-shield-check text-white text-lg"></i>
+            </div>
+            <div>
+              <h1 class="text-lg font-bold text-white">AGRODRISHTI</h1>
+              <p class="text-red-400 text-xs">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500 text-white"
+          >
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+          <a
+            href="admin.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-pencil-square"></i> MapLoom Editor
+          </a>
+          <a
+            href="#predictions"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-cpu"></i> AI Predictions
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-people"></i> Users
+          </a>
+          <a
+            href="#"
+            onclick="openAdminSettingsModal()"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-agro-900 transition"
+          >
+            <i class="bi bi-gear"></i> Settings
+          </a>
+        </nav>
+        <div class="p-4 border-t border-agro-900">
+          <button
+            onclick="logout()"
+            class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition"
+          >
+            <i class="bi bi-box-arrow-left"></i> Logout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 lg:ml-0">
+        <!-- Top Bar -->
+        <header
+          class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-30"
+        >
+          <button class="lg:hidden text-gray-600" onclick="toggleSidebar()">
+            <i class="bi bi-list text-2xl"></i>
+          </button>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">Admin Dashboard</h2>
+            <p class="text-gray-500 text-sm">
+              System monitoring & AI analytics
+            </p>
+          </div>
+          <div class="flex items-center gap-4">
+            <span
+              class="px-3 py-1 bg-red-100 text-red-600 text-xs rounded-full font-medium"
+            >
+              <i class="bi bi-shield-check mr-1"></i> Admin
+            </span>
+            <div
+              class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"
+            >
+              <i class="bi bi-person-gear text-red-600 text-lg"></i>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-6">
+          <!-- Admin Stats -->
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-agro-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-people text-agro-600 text-xl"></i>
+                </div>
+                <span class="text-xs text-agro-500 bg-agro-50 px-2 py-1 rounded"
+                  >+12%</span
+                >
+              </div>
+              <p class="text-2xl font-bold text-gray-800">1,248</p>
+              <p class="text-gray-500 text-sm">Total Users</p>
+            </div>
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-map text-blue-600 text-xl"></i>
+                </div>
+                <span class="text-xs text-blue-500 bg-blue-50 px-2 py-1 rounded"
+                  >+8%</span
+                >
+              </div>
+              <p class="text-2xl font-bold text-gray-800">386</p>
+              <p class="text-gray-500 text-sm">Mapped Areas</p>
+            </div>
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-cpu text-amber-600 text-xl"></i>
+                </div>
+                <span
+                  class="text-xs text-amber-500 bg-amber-50 px-2 py-1 rounded"
+                  >+25%</span
+                >
+              </div>
+              <p class="text-2xl font-bold text-gray-800">5,420</p>
+              <p class="text-gray-500 text-sm">AI Predictions</p>
+            </div>
+            <div
+              class="bg-white p-5 rounded-2xl border border-gray-100 card-hover transition"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-graph-up-arrow text-purple-600 text-xl"></i>
+                </div>
+                <span
+                  class="text-xs text-purple-500 bg-purple-50 px-2 py-1 rounded"
+                  >95%</span
+                >
+              </div>
+              <p class="text-2xl font-bold text-gray-800">95.2%</p>
+              <p class="text-gray-500 text-sm">Prediction Accuracy</p>
+            </div>
+          </div>
+
+          <!-- AI Yield Prediction System -->
+          <section
+            id="predictions"
+            class="bg-white rounded-2xl border border-gray-100 p-6 mb-6"
+          >
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center"
+                >
+                  <i class="bi bi-graph-up text-white text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-800">
+                    AI Yield Prediction Engine
+                  </h3>
+                  <p class="text-gray-500 text-sm">
+                    Predict crop yield using Smart Farming dataset
+                  </p>
+                </div>
+              </div>
+              <span
+                class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium"
+              >
+                <i class="bi bi-shield-check"></i> Admin Access
+              </span>
+            </div>
+
+            <!-- Crop & Region Selection -->
+            <div class="bg-gray-50 rounded-xl p-5 mb-6 border border-gray-200">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="bi bi-geo-alt text-red-600"></i>
+                <span class="font-medium text-gray-800"
+                  >Smart Farming Configuration</span
+                >
+              </div>
+              <div class="grid md:grid-cols-4 gap-4">
+                <select
+                  id="cropSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-red-500 outline-none"
+                >
+                  <option value="">-- Select Crop --</option>
+                  <option value="Rice">Rice</option>
+                  <option value="Wheat">Wheat</option>
+                  <option value="Maize">Maize</option>
+                  <option value="Cotton">Cotton</option>
+                  <option value="Soybean">Soybean</option>
+                </select>
+                <select
+                  id="regionSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-red-500 outline-none"
+                  onchange="loadRegionDefaults()"
+                >
+                  <option value="">-- Select Region --</option>
+                  <option value="North India">North India</option>
+                  <option value="South India">South India</option>
+                  <option value="South USA">South USA</option>
+                  <option value="Central USA">Central USA</option>
+                  <option value="East Africa">East Africa</option>
+                </select>
+                <select
+                  id="irrigationSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-red-500 outline-none"
+                >
+                  <option value="Drip">Drip Irrigation</option>
+                  <option value="Sprinkler">Sprinkler</option>
+                  <option value="Manual">Manual</option>
+                </select>
+                <select
+                  id="fertilizerSelect"
+                  class="px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-red-500 outline-none"
+                >
+                  <option value="Organic">Organic</option>
+                  <option value="Inorganic">Inorganic</option>
+                  <option value="Mixed">Mixed</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Smart Farming Parameters Grid -->
+            <div class="grid md:grid-cols-4 gap-4 mb-4">
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Soil Moisture (%)</label
+                >
+                <input
+                  type="number"
+                  id="soilMoistureInput"
+                  value="30"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="15-50"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block">Soil pH</label>
+                <input
+                  type="number"
+                  id="soilPhInput"
+                  step="0.1"
+                  value="6.5"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="5.5-8.0"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Temperature (°C)</label
+                >
+                <input
+                  type="number"
+                  id="tempValue"
+                  value="28"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="15-40"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Rainfall (mm)</label
+                >
+                <input
+                  type="number"
+                  id="rainValue"
+                  value="120"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="50-300"
+                />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-6">
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Humidity (%)</label
+                >
+                <input
+                  type="number"
+                  id="humidValue"
+                  value="65"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="30-95"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Sunlight (hrs)</label
+                >
+                <input
+                  type="number"
+                  id="sunlightInput"
+                  step="0.1"
+                  value="7"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="4-10"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >NDVI Index</label
+                >
+                <input
+                  type="number"
+                  id="ndviInput"
+                  step="0.01"
+                  value="0.65"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="0.2-1.0"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Disease Status</label
+                >
+                <select
+                  id="diseaseSelect"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                >
+                  <option value="Mild">Mild</option>
+                  <option value="Moderate">Moderate</option>
+                  <option value="Severe">Severe</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Pesticide (ml)</label
+                >
+                <input
+                  type="number"
+                  id="pesticideInput"
+                  value="10"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="5-30"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-500 mb-1 block"
+                  >Growing Days</label
+                >
+                <input
+                  type="number"
+                  id="daysInput"
+                  value="120"
+                  class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-red-500 outline-none text-sm"
+                  placeholder="90-150"
+                />
+              </div>
+              <div class="flex items-end">
+                <button
+                  onclick="runYieldPrediction()"
+                  class="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl font-medium transition flex items-center justify-center gap-2"
+                >
+                  <i class="bi bi-play-fill"></i> Predict Yield
+                </button>
+              </div>
+            </div>
+
+            <!-- Prediction Results -->
+            <div id="predictionResults" class="hidden">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-lightning-charge-fill text-amber-500"></i>
+                  <span class="font-semibold text-gray-800"
+                    >Yield Prediction Results</span
+                  >
+                </div>
+                <span class="text-sm text-gray-500" id="predictionTime"></span>
+              </div>
+
+              <!-- Main Result Card -->
+              <div
+                id="yieldResultCard"
+                class="bg-gradient-to-r from-agro-500 to-agro-600 text-white p-6 rounded-2xl mb-4"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-white/70 text-sm mb-1">Predicted Yield</p>
+                    <p class="text-4xl font-bold" id="yieldValue">0</p>
+                    <p class="text-white/80">kg per hectare</p>
+                  </div>
+                  <div class="text-right">
+                    <span id="cropEmoji" class="text-5xl">🌾</span>
+                    <p class="text-lg font-semibold mt-2" id="cropName">Rice</p>
+                    <span
+                      id="yieldCategory"
+                      class="px-3 py-1 bg-white/20 rounded-full text-sm"
+                      >High</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Improvements -->
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="bi bi-lightbulb text-amber-600"></i>
+                  <span class="font-medium text-amber-800"
+                    >Admin Recommendations</span
+                  >
+                </div>
+                <ul
+                  id="improvementsList"
+                  class="text-amber-700 text-sm space-y-1"
+                ></ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Analytics Grid -->
+          <div class="grid lg:grid-cols-2 gap-6 mb-6">
+            <!-- Regional Data -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-9 h-9 rounded-lg bg-agro-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-bar-chart text-agro-600"></i>
+                </div>
+                <h3 class="font-bold text-gray-800">Regional Performance</h3>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">North India</span>
+                    <span class="font-medium text-agro-600">87%</span>
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-agro-500 rounded-full"
+                      style="width: 87%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">South India</span>
+                    <span class="font-medium text-blue-600">92%</span>
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-blue-500 rounded-full"
+                      style="width: 92%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">East India</span>
+                    <span class="font-medium text-amber-600">78%</span>
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-amber-500 rounded-full"
+                      style="width: 78%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">West India</span>
+                    <span class="font-medium text-purple-600">85%</span>
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-purple-500 rounded-full"
+                      style="width: 85%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-600">Central India</span>
+                    <span class="font-medium text-red-600">80%</span>
+                  </div>
+                  <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-red-500 rounded-full"
+                      style="width: 80%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center"
+                >
+                  <i class="bi bi-activity text-blue-600"></i>
+                </div>
+                <h3 class="font-bold text-gray-800">Recent Activity</h3>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center gap-4 p-3 bg-agro-50 rounded-xl">
+                  <div
+                    class="w-8 h-8 rounded-full bg-agro-500 flex items-center justify-center"
+                  >
+                    <i class="bi bi-cpu text-white text-sm"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800">
+                      New prediction - North Region
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Rice recommended • 2 min ago
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-blue-50 rounded-xl">
+                  <div
+                    class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center"
+                  >
+                    <i class="bi bi-person-plus text-white text-sm"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800">
+                      New farmer registered
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Maharashtra • 15 min ago
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-amber-50 rounded-xl">
+                  <div
+                    class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center"
+                  >
+                    <i class="bi bi-map text-white text-sm"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800">
+                      Area mapped - Gujarat
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      1,200 hectares • 1 hr ago
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center gap-4 p-3 bg-purple-50 rounded-xl"
+                >
+                  <div
+                    class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center"
+                  >
+                    <i class="bi bi-cloud-download text-white text-sm"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800">
+                      Dataset updated
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      2,202 crop records • 3 hrs ago
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Quick Actions -->
+          <div class="grid sm:grid-cols-3 gap-4">
+            <a
+              href="admin.html"
+              class="bg-red-500 hover:bg-red-600 text-white p-5 rounded-2xl flex items-center gap-4 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+              >
+                <i class="bi bi-pencil-square text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">MapLoom Editor</h4>
+                <p class="text-white/70 text-sm">Edit & manage areas</p>
+              </div>
+            </a>
+            <a
+              href="#"
+              class="bg-agro-500 hover:bg-agro-600 text-white p-5 rounded-2xl flex items-center gap-4 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+              >
+                <i class="bi bi-database text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">Manage Dataset</h4>
+                <p class="text-white/70 text-sm">Update crop data</p>
+              </div>
+            </a>
+            <a
+              href="#"
+              class="bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-2xl flex items-center gap-4 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+              >
+                <i class="bi bi-file-earmark-bar-graph text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">Export Reports</h4>
+                <p class="text-white/70 text-sm">Download analytics</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 py-6 border-t border-gray-200">
+          <div
+            class="flex flex-col md:flex-row items-center justify-between gap-4 px-6"
+          >
+            <div class="flex items-center gap-2">
+              <div
+                class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center"
+              >
+                <i class="bi bi-shield-check text-white"></i>
+              </div>
+              <span class="font-bold text-gray-700">AGRODRISHTI Admin</span>
+            </div>
+            <p class="text-gray-500 text-sm">
+              © 2026 AgroDrishti. Powered by MapLoom Technology.
+            </p>
+            <div class="flex gap-4">
+              <a href="#" class="text-gray-500 hover:text-red-600 text-sm"
+                >Docs</a
+              >
+              <a href="#" class="text-gray-500 hover:text-red-600 text-sm"
+                >API</a
+              >
+              <a href="#" class="text-gray-500 hover:text-red-600 text-sm"
+                >Support</a
+              >
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <!-- Admin Settings Modal -->
+    <div
+      id="adminSettingsModal"
+      class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center"
+    >
+      <div
+        class="bg-white rounded-2xl w-full max-w-lg mx-4 overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <div class="bg-gradient-to-r from-red-600 to-red-700 p-5 sticky top-0">
+          <div class="flex items-center justify-between">
+            <h3 class="text-white text-lg font-bold flex items-center gap-2">
+              <i class="bi bi-gear"></i> Admin Settings
+            </h3>
+            <button
+              onclick="closeAdminSettingsModal()"
+              class="text-white/80 hover:text-white"
+            >
+              <i class="bi bi-x-lg text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <div class="p-5 space-y-4">
+          <!-- Upload New Dataset -->
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="bi bi-cloud-upload text-blue-500 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Upload New Dataset</p>
+                <p class="text-xs text-gray-500">
+                  Upload CSV file to update ML model
+                </p>
+              </div>
+            </div>
+            <input
+              type="file"
+              id="datasetFile"
+              accept=".csv"
+              class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+            />
+            <button
+              onclick="uploadDataset()"
+              class="mt-3 w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              <i class="bi bi-upload mr-2"></i> Upload Dataset
+            </button>
+          </div>
+
+          <!-- Dark Mode -->
+          <div
+            class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+          >
+            <div class="flex items-center gap-3">
+              <i class="bi bi-moon text-purple-600 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Dark Mode</p>
+                <p class="text-xs text-gray-500">Toggle dark theme</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="adminDarkToggle"
+                class="sr-only peer"
+              />
+              <div
+                class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"
+              ></div>
+            </label>
+          </div>
+
+          <!-- Retrain Model -->
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="bi bi-cpu text-green-500 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Retrain ML Model</p>
+                <p class="text-xs text-gray-500">
+                  Retrain with current dataset
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="retrainModel()"
+              class="w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+            >
+              <i class="bi bi-arrow-repeat mr-2"></i> Retrain Model
+            </button>
+          </div>
+
+          <!-- Backup Data -->
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="bi bi-download text-amber-500 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">Export Data</p>
+                <p class="text-xs text-gray-500">Download system data backup</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button
+                onclick="exportUsers()"
+                class="flex-1 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition text-sm"
+              >
+                <i class="bi bi-people mr-1"></i> Users
+              </button>
+              <button
+                onclick="exportPredictions()"
+                class="flex-1 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition text-sm"
+              >
+                <i class="bi bi-graph-up mr-1"></i> Predictions
+              </button>
+            </div>
+          </div>
+
+          <!-- System Info -->
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3 mb-3">
+              <i class="bi bi-info-circle text-indigo-500 text-xl"></i>
+              <div>
+                <p class="font-medium text-gray-800">System Info</p>
+              </div>
+            </div>
+            <div class="text-sm text-gray-600 space-y-1">
+              <p><span class="font-medium">Version:</span> 2.0.0</p>
+              <p>
+                <span class="font-medium">Model:</span> RandomForestRegressor
+              </p>
+              <p>
+                <span class="font-medium">Dataset:</span>
+                Smart_Farming_Crop_Yield_2024.csv
+              </p>
+            </div>
+          </div>
+
+          <button
+            onclick="saveAdminSettings()"
+            class="w-full py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition"
+          >
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sidebar toggle
+      function toggleSidebar() {
+        document
+          .getElementById("sidebar")
+          .classList.toggle("-translate-x-full");
+      }
+
+      // Logout
+      async function logout() {
+        await fetch("/api/logout", { method: "POST" });
+        location.href = "index.html";
+      }
+
+      // Region defaults for Smart Farming
+      const regionDefaults = {
+        "North India": {
+          temp: 28,
+          humidity: 55,
+          rainfall: 120,
+          soilMoisture: 32,
+          soilPh: 7.0,
+          sunlight: 7.5,
+        },
+        "South India": {
+          temp: 32,
+          humidity: 80,
+          rainfall: 200,
+          soilMoisture: 38,
+          soilPh: 6.2,
+          sunlight: 8.0,
+        },
+        "South USA": {
+          temp: 30,
+          humidity: 65,
+          rainfall: 150,
+          soilMoisture: 28,
+          soilPh: 6.8,
+          sunlight: 8.5,
+        },
+        "Central USA": {
+          temp: 25,
+          humidity: 60,
+          rainfall: 130,
+          soilMoisture: 30,
+          soilPh: 7.2,
+          sunlight: 7.8,
+        },
+        "East Africa": {
+          temp: 28,
+          humidity: 70,
+          rainfall: 180,
+          soilMoisture: 35,
+          soilPh: 6.5,
+          sunlight: 9.0,
+        },
+      };
+
+      function loadRegionDefaults() {
+        const region = document.getElementById("regionSelect").value;
+        if (!region || !regionDefaults[region]) return;
+        const data = regionDefaults[region];
+        document.getElementById("tempValue").value = data.temp;
+        document.getElementById("humidValue").value = data.humidity;
+        document.getElementById("rainValue").value = data.rainfall;
+        document.getElementById("soilMoistureInput").value = data.soilMoisture;
+        document.getElementById("soilPhInput").value = data.soilPh;
+        document.getElementById("sunlightInput").value = data.sunlight;
+      }
+
+      async function runYieldPrediction() {
+        const crop = document.getElementById("cropSelect").value;
+        const region = document.getElementById("regionSelect").value;
+
+        if (!crop || !region) {
+          alert("Please select both crop type and region.");
+          return;
+        }
+
+        const requestData = {
+          crop_type: crop,
+          region: region,
+          soil_moisture:
+            parseFloat(document.getElementById("soilMoistureInput").value) ||
+            30,
+          soil_ph:
+            parseFloat(document.getElementById("soilPhInput").value) || 6.5,
+          temperature:
+            parseFloat(document.getElementById("tempValue").value) || 28,
+          rainfall:
+            parseFloat(document.getElementById("rainValue").value) || 120,
+          humidity:
+            parseFloat(document.getElementById("humidValue").value) || 65,
+          sunlight_hours:
+            parseFloat(document.getElementById("sunlightInput").value) || 7,
+          irrigation_type: document.getElementById("irrigationSelect").value,
+          fertilizer_type: document.getElementById("fertilizerSelect").value,
+          pesticide_usage:
+            parseFloat(document.getElementById("pesticideInput").value) || 10,
+          total_days:
+            parseInt(document.getElementById("daysInput").value) || 120,
+          ndvi: parseFloat(document.getElementById("ndviInput").value) || 0.65,
+          crop_disease_status: document.getElementById("diseaseSelect").value,
+        };
+
+        try {
+          const response = await fetch("/api/agrodrishti/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            displayYieldResults(result);
+          } else {
+            alert("Prediction failed. Please try again.");
+          }
+        } catch (error) {
+          console.error("Prediction error:", error);
+          alert("Error connecting to server.");
+        }
+      }
+
+      function displayYieldResults(result) {
+        document.getElementById("predictionResults").classList.remove("hidden");
+        document.getElementById("predictionTime").textContent =
+          `Generated: ${new Date().toLocaleTimeString()}`;
+
+        const pred = result.prediction;
+
+        document.getElementById("yieldValue").textContent =
+          pred.yield_kg_per_hectare.toLocaleString();
+        document.getElementById("cropEmoji").textContent = pred.crop_emoji;
+        document.getElementById("cropName").textContent = pred.crop_type;
+        document.getElementById("yieldCategory").textContent =
+          pred.yield_category + " Yield";
+
+        const card = document.getElementById("yieldResultCard");
+        card.className = "p-6 rounded-2xl mb-4 text-white ";
+        if (pred.yield_color === "green") {
+          card.className += "bg-gradient-to-r from-green-500 to-green-600";
+        } else if (pred.yield_color === "amber") {
+          card.className += "bg-gradient-to-r from-amber-500 to-amber-600";
+        } else {
+          card.className += "bg-gradient-to-r from-red-500 to-red-600";
+        }
+
+        const improvementsList = document.getElementById("improvementsList");
+        improvementsList.innerHTML = result.improvements
+          .map(
+            (imp) =>
+              `<li><i class="bi bi-check-circle-fill mr-2"></i>${imp}</li>`,
+          )
+          .join("");
+      }
+
+      // ========== ADMIN SETTINGS ==========
+      function openAdminSettingsModal() {
+        event.preventDefault();
+        document
+          .getElementById("adminSettingsModal")
+          .classList.remove("hidden");
+        document.getElementById("adminSettingsModal").classList.add("flex");
+        loadAdminSettings();
+      }
+
+      function closeAdminSettingsModal() {
+        document.getElementById("adminSettingsModal").classList.add("hidden");
+        document.getElementById("adminSettingsModal").classList.remove("flex");
+      }
+
+      function loadAdminSettings() {
+        const dark = localStorage.getItem("adminDarkMode") === "true";
+        document.getElementById("adminDarkToggle").checked = dark;
+      }
+
+      function saveAdminSettings() {
+        localStorage.setItem(
+          "adminDarkMode",
+          document.getElementById("adminDarkToggle").checked,
+        );
+        applyAdminDarkMode();
+        closeAdminSettingsModal();
+        alert("Settings saved!");
+      }
+
+      function applyAdminDarkMode() {
+        const isDark = localStorage.getItem("adminDarkMode") === "true";
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+
+      function uploadDataset() {
+        const fileInput = document.getElementById("datasetFile");
+        if (!fileInput.files.length) {
+          alert("Please select a CSV file first.");
+          return;
+        }
+        // In production, upload to server
+        alert(
+          "Dataset upload feature - would upload: " + fileInput.files[0].name,
+        );
+      }
+
+      function retrainModel() {
+        alert("Model retraining initiated. This may take a few minutes...");
+        // In production, call API to retrain
+      }
+
+      function exportUsers() {
+        alert("Exporting user data...");
+        // In production, trigger download
+      }
+
+      function exportPredictions() {
+        alert("Exporting prediction history...");
+        // In production, trigger download
+      }
+
+      // Apply dark mode on load
+      applyAdminDarkMode();
+    </script>
+  </body>
+</html>

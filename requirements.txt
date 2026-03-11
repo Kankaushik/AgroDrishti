@@ -5,3 +5,8 @@ pydantic==2.8.2
 bleach==6.1.0
 passlib[bcrypt]==1.7.4
 python-dotenv==1.0.1
+gunicorn==22.0.0
+scikit-learn
+pandas
+numpy
+joblib
